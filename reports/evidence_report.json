@@ -1,0 +1,283 @@
+{
+  "title": "AMAN Gate - Evidence Report (synthetic lab data)",
+  "generated_at": "2026-10-20T15:43:35.846379+00:00",
+  "evaluation_machine": {
+    "python": "3.12.13",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 126 Stepping 5, GenuineIntel",
+    "cpu_count": 8
+  },
+  "scenario_runs_counted": 10,
+  "attack_block": {
+    "attempts": 10,
+    "blocked": 10,
+    "attempt_block_pct": 100.0,
+    "injected_tool_calls": {
+      "attempts": 7,
+      "blocked": 7
+    },
+    "unauthorized_user_requests": {
+      "attempts": 3,
+      "blocked": 3
+    },
+    "false_allows": 0,
+    "denominator_note": "Attack = injected tool calls from compromised documents + user requests that are unauthorized by design (ground-truth labelled per scenario)."
+  },
+  "legitimate_requests": {
+    "requests": 10,
+    "succeeded": 10,
+    "success_pct": 100.0,
+    "note": "Legitimate = user requests labelled 'permit'. Success = ALLOW or NEEDS_APPROVAL (a held sensitive send is a correct outcome)."
+  },
+  "false_blocks": {
+    "legitimate_actions_denied": 0,
+    "note": "User requests labelled 'permit' that were wrongly denied."
+  },
+  "latency_ms": {
+    "count": 20,
+    "p50": 1.4645,
+    "p95": 36.0982,
+    "max": 45.3136,
+    "note": "Deterministic policy decision latency only (advisory ML latency measured separately)."
+  },
+  "audit_chain": {
+    "valid": true,
+    "checked": 43
+  },
+  "model_metrics": {
+    "available": true,
+    "model_version": "aman-tfidf-logreg-2026.10-v1",
+    "dataset_version": "aman-injection-synthetic-2026.10-v1",
+    "dataset_fingerprint": "71575e2de206b9e29900c265df6c4bffdc9ffde5cee1ee92528b666c352ce32e",
+    "seed": 7,
+    "threshold": 0.5,
+    "split": {
+      "train": 403,
+      "holdout": 156,
+      "train_positives": 264,
+      "holdout_positives": 115
+    },
+    "leakage_check": {
+      "identical_texts_in_both_splits": 0,
+      "ok": true
+    },
+    "holdout_overall": {
+      "confusion_matrix": {
+        "tn": 41,
+        "fp": 0,
+        "fn": 0,
+        "tp": 115
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 156
+    },
+    "holdout_by_language": {
+      "en": {
+        "confusion_matrix": {
+          "tn": 14,
+          "fp": 0,
+          "fn": 0,
+          "tp": 78
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 92
+      },
+      "en-b64": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 9
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 9
+      },
+      "en-zw": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 8
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 8
+      },
+      "mixed": {
+        "confusion_matrix": {
+          "tn": 27,
+          "fp": 0,
+          "fn": 0,
+          "tp": 3
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 30
+      },
+      "roman_urdu": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 11
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 11
+      },
+      "urdu": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 6
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 6
+      }
+    },
+    "holdout_by_kind": {
+      "benign_ambiguous": {
+        "confusion_matrix": {
+          "tn": 6,
+          "fp": 0,
+          "fn": 0,
+          "tp": 0
+        },
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "f1": 0.0,
+        "support": 6
+      },
+      "benign_hard": {
+        "confusion_matrix": {
+          "tn": 5,
+          "fp": 0,
+          "fn": 0,
+          "tp": 0
+        },
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "benign_note": {
+        "confusion_matrix": {
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "tp": 0
+        },
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "benign_quote": {
+        "confusion_matrix": {
+          "tn": 14,
+          "fp": 0,
+          "fn": 0,
+          "tp": 0
+        },
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "f1": 0.0,
+        "support": 14
+      },
+      "benign_request": {
+        "confusion_matrix": {
+          "tn": 12,
+          "fp": 0,
+          "fn": 0,
+          "tp": 0
+        },
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "f1": 0.0,
+        "support": 12
+      },
+      "injection": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 95
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 95
+      },
+      "injection_ambiguous": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 3
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "injection_b64": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 9
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 9
+      },
+      "injection_zw": {
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 0,
+          "fn": 0,
+          "tp": 8
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "f1": 1.0,
+        "support": 8
+      }
+    },
+    "note": "Metrics are measured on the disjoint holdout only and describe the ML model, not the heuristic signals. The classifier is advisory and never changes a policy decision."
+  },
+  "caveats": [
+    "All data is synthetic; no real institution, supplier or person is represented.",
+    "Metrics describe only the scenarios actually executed in this database.",
+    "ML metrics (if present) are measured on a disjoint holdout and are advisory, not enforcing."
+  ]
+}

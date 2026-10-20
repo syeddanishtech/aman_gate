@@ -1,0 +1,170 @@
+[
+ {
+  "id": "VO01",
+  "in": 0.6,
+  "out": 4.8,
+  "text": "AI assistants are gaining access to our files and business tools."
+ },
+ {
+  "id": "VO02",
+  "in": 5.2,
+  "out": 8.6,
+  "text": "But not every document can be trusted."
+ },
+ {
+  "id": "VO03",
+  "in": 10.4,
+  "out": 15,
+  "text": "A procurement officer asks an AI assistant to compare two supplier quotes."
+ },
+ {
+  "id": "VO04",
+  "in": 15.3,
+  "out": 17.4,
+  "text": "But one quote hides an instruction:"
+ },
+ {
+  "id": "VO05",
+  "in": 17.6,
+  "out": 21.6,
+  "text": "open the restricted budget, and send it to an outside address."
+ },
+ {
+  "id": "VO06",
+  "in": 22,
+  "out": 24.7,
+  "text": "That's called indirect prompt injection."
+ },
+ {
+  "id": "VO07",
+  "in": 25.6,
+  "out": 27.6,
+  "text": "Meet AMAN Gate:"
+ },
+ {
+  "id": "VO08",
+  "in": 27.8,
+  "out": 31.6,
+  "text": "a locally deployed security gateway that independently checks"
+ },
+ {
+  "id": "VO09",
+  "in": 31.8,
+  "out": 35.6,
+  "text": "what an AI assistant may read, where it may send data,"
+ },
+ {
+  "id": "VO10",
+  "in": 35.8,
+  "out": 38.6,
+  "text": "and which actions need human approval."
+ },
+ {
+  "id": "VO11",
+  "in": 39.6,
+  "out": 43.4,
+  "text": "These checks run on the server, outside the AI model."
+ },
+ {
+  "id": "VO12",
+  "in": 43.8,
+  "out": 47.6,
+  "text": "Every tool call the assistant proposes passes fixed rules:"
+ },
+ {
+  "id": "VO13",
+  "in": 47.7,
+  "out": 53.2,
+  "text": "permitted tools, strict arguments, document access, approved destinations,"
+ },
+ {
+  "id": "VO14",
+  "in": 53.4,
+  "out": 57.8,
+  "text": "and approval for high-impact sends. Anything unknown is denied."
+ },
+ {
+  "id": "VO15",
+  "in": 58.3,
+  "out": 62.3,
+  "text": "Here is the real prototype: one scenario, run two ways."
+ },
+ {
+  "id": "VO16",
+  "in": 62.5,
+  "out": 66.9,
+  "text": "Without enforcement, the scripted assistant follows the hidden note"
+ },
+ {
+  "id": "VO17",
+  "in": 67.1,
+  "out": 70.9,
+  "text": "and exposes the restricted budget, inside a lab sandbox."
+ },
+ {
+  "id": "VO18",
+  "in": 71.3,
+  "out": 74.3,
+  "text": "Through AMAN Gate, the comparison is allowed."
+ },
+ {
+  "id": "VO19",
+  "in": 74.6,
+  "out": 77.8,
+  "text": "The budget read is denied by document permissions."
+ },
+ {
+  "id": "VO20",
+  "in": 77.9,
+  "out": 82.4,
+  "text": "The outbound send is blocked. Unapproved addresses are refused."
+ },
+ {
+  "id": "VO21",
+  "in": 83.4,
+  "out": 87.6,
+  "text": "Sensitive actions that are allowed still wait for a second person:"
+ },
+ {
+  "id": "VO22",
+  "in": 87.7,
+  "out": 91.3,
+  "text": "a finance manager approves, and it runs only once."
+ },
+ {
+  "id": "VO23",
+  "in": 91.4,
+  "out": 95.1,
+  "text": "Every decision lands in a tamper-evident, chained audit log"
+ },
+ {
+  "id": "VO24",
+  "in": 95.3,
+  "out": 97.9,
+  "text": "that security teams can verify."
+ },
+ {
+  "id": "VO25",
+  "in": 98.6,
+  "out": 103.6,
+  "text": "Designed for institutions that need useful AI automation"
+ },
+ {
+  "id": "VO26",
+  "in": 103.8,
+  "out": 107.4,
+  "text": "without surrendering control of sensitive data."
+ },
+ {
+  "id": "VO27",
+  "in": 108.8,
+  "out": 110.4,
+  "text": "AMAN Gate."
+ },
+ {
+  "id": "VO28",
+  "in": 110.5,
+  "out": 114.4,
+  "text": "Trust the task. Verify every action."
+ }
+]

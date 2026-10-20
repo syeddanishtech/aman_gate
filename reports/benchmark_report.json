@@ -1,0 +1,49 @@
+{
+  "title": "AMAN Gate - Performance Benchmark",
+  "generated_at": "2026-10-20T15:43:03.990644+00:00",
+  "calls_per_series": 200,
+  "evaluation_machine": {
+    "python": "3.12.13",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 126 Stepping 5, GenuineIntel",
+    "cpu_count": 8
+  },
+  "policy_decision_ms": {
+    "name": "policy_decision_incl_advisory_excl_audit_write",
+    "count": 200,
+    "p50": 1.6389,
+    "p95": 3.4748,
+    "p99": 3.9417,
+    "mean": 1.4352,
+    "max": 4.31,
+    "min": 0.0051
+  },
+  "advisory_risk_ms": {
+    "name": "advisory_risk_heuristic_plus_ml_standalone",
+    "count": 200,
+    "p50": 1.3786,
+    "p95": 2.0289,
+    "p99": 2.3009,
+    "mean": 1.4502,
+    "max": 2.7624,
+    "min": 1.1811
+  },
+  "end_to_end_ms": {
+    "name": "end_to_end_incl_durable_audit_write",
+    "count": 200,
+    "p50": 35.7885,
+    "p95": 36.2983,
+    "p99": 82.7273,
+    "mean": 37.428,
+    "max": 131.2841,
+    "min": 24.7731
+  },
+  "ml_model_available": true,
+  "ml_model_version": "aman-tfidf-logreg-2026.10-v1",
+  "notes": [
+    "In-process measurement of the enforcement core (no HTTP/network).",
+    "policy_decision_ms is the deterministic allow/deny/approval decision (schema + ACL/destination checks) plus the advisory risk score, as recorded on each audit event \u2014 this is the decision cost.",
+    "advisory_risk_ms isolates the optional ML + heuristic latency, measured separately per the brief; it is a component of policy_decision_ms, not additive on top of it.",
+    "end_to_end_ms additionally includes the durable, tamper-evident audit write (SQLite fsync), which dominates the wall time and is a persistence cost rather than a policy-logic cost. A production deployment would batch/stream audit writes (e.g. WAL group commit or append to a log service)."
+  ]
+}

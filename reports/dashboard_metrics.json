@@ -1,0 +1,27 @@
+{
+  "demo_status": "Lab Data (synthetic)",
+  "runs": 20,
+  "events_total": 43,
+  "gated_decisions": {
+    "ALLOW": 10,
+    "DENY": 10,
+    "NEEDS_APPROVAL": 2
+  },
+  "denied_actions": 10,
+  "needs_approval_total": 2,
+  "pending_approvals": 0,
+  "audit_integrity": {
+    "valid": true,
+    "checked": 43
+  },
+  "gated_outbox_sends": 1,
+  "sink_records": 1,
+  "decision_latency_ms": {
+    "count": 20,
+    "p50": 1.4645,
+    "p95": 36.0982,
+    "max": 45.3136,
+    "mean": 10.226
+  },
+  "generated_at": "2026-10-20T15:43:35.917285+00:00"
+}

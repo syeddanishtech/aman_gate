@@ -1,0 +1,230 @@
+{
+  "model_version": "aman-tfidf-logreg-2026.10-v1",
+  "dataset_version": "aman-injection-synthetic-2026.10-v1",
+  "dataset_fingerprint": "71575e2de206b9e29900c265df6c4bffdc9ffde5cee1ee92528b666c352ce32e",
+  "seed": 7,
+  "threshold": 0.5,
+  "split": {
+    "train": 403,
+    "holdout": 156,
+    "train_positives": 264,
+    "holdout_positives": 115
+  },
+  "leakage_check": {
+    "identical_texts_in_both_splits": 0,
+    "ok": true
+  },
+  "holdout_overall": {
+    "confusion_matrix": {
+      "tn": 41,
+      "fp": 0,
+      "fn": 0,
+      "tp": 115
+    },
+    "precision": 1.0,
+    "recall": 1.0,
+    "false_positive_rate": 0.0,
+    "f1": 1.0,
+    "support": 156
+  },
+  "holdout_by_language": {
+    "en": {
+      "confusion_matrix": {
+        "tn": 14,
+        "fp": 0,
+        "fn": 0,
+        "tp": 78
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 92
+    },
+    "en-b64": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 9
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 9
+    },
+    "en-zw": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 8
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 8
+    },
+    "mixed": {
+      "confusion_matrix": {
+        "tn": 27,
+        "fp": 0,
+        "fn": 0,
+        "tp": 3
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 30
+    },
+    "roman_urdu": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 11
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 11
+    },
+    "urdu": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 6
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 6
+    }
+  },
+  "holdout_by_kind": {
+    "benign_ambiguous": {
+      "confusion_matrix": {
+        "tn": 6,
+        "fp": 0,
+        "fn": 0,
+        "tp": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_positive_rate": 0.0,
+      "f1": 0.0,
+      "support": 6
+    },
+    "benign_hard": {
+      "confusion_matrix": {
+        "tn": 5,
+        "fp": 0,
+        "fn": 0,
+        "tp": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_positive_rate": 0.0,
+      "f1": 0.0,
+      "support": 5
+    },
+    "benign_note": {
+      "confusion_matrix": {
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "tp": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_positive_rate": 0.0,
+      "f1": 0.0,
+      "support": 4
+    },
+    "benign_quote": {
+      "confusion_matrix": {
+        "tn": 14,
+        "fp": 0,
+        "fn": 0,
+        "tp": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_positive_rate": 0.0,
+      "f1": 0.0,
+      "support": 14
+    },
+    "benign_request": {
+      "confusion_matrix": {
+        "tn": 12,
+        "fp": 0,
+        "fn": 0,
+        "tp": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_positive_rate": 0.0,
+      "f1": 0.0,
+      "support": 12
+    },
+    "injection": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 95
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 95
+    },
+    "injection_ambiguous": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 3
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 3
+    },
+    "injection_b64": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 9
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 9
+    },
+    "injection_zw": {
+      "confusion_matrix": {
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "tp": 8
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "f1": 1.0,
+      "support": 8
+    }
+  },
+  "note": "Metrics are measured on the disjoint holdout only and describe the ML model, not the heuristic signals. The classifier is advisory and never changes a policy decision."
+}

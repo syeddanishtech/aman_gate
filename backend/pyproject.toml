@@ -1,0 +1,31 @@
+[project]
+name = "aman-gate"
+version = "0.1.0"
+description = "AMAN Gate - Sovereign AI Agent Security Gateway (lab prototype, synthetic data only)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi==0.115.12",
+    "uvicorn==0.34.2",
+    "pydantic==2.11.4",
+    "sqlalchemy==2.0.40",
+    "pyjwt==2.10.1",
+    "python-multipart==0.0.20",
+    "scikit-learn==1.6.1",
+    "numpy==2.2.5",
+    "scipy==1.15.2",
+    "joblib==1.4.2",
+    "pypdf==5.4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==8.3.5",
+    "httpx==0.28.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

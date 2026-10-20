@@ -1,0 +1,17 @@
+AMAN Gate video build check — 2026-10-20T15:26:42.470Z
+Timeline: 115.00 s (3450 frames @ 30 fps); limit 120 s; margin 5.0 s
+Segments: 8; VO cues: 28; shots: 12 (11 required)
+VO: 224 words, 102.0 s of speech, 132 wpm spoken, 117 wpm over whole film
+Max cps: 16.7 (limit 17); max line: 41 chars (limit 42)
+
+  1. Hook                                         00:00.0–00:10.0  10.0 s  motion
+  2. Stakes                                       00:10.0–00:25.0  15.0 s  motion
+  3. Solution reveal                              00:25.0–00:39.0  14.0 s  motion
+  4. Architecture                                 00:39.0–00:58.0  19.0 s  motion+capture
+  5. Live attack replay (REAL CAPTURE)            00:58.0–01:23.0  25.0 s  capture
+  6. Human approval + evidence (REAL CAPTURE)     01:23.0–01:38.0  15.0 s  capture
+  7. Use cases                                    01:38.0–01:48.0  10.0 s  motion
+  8. Closing                                      01:48.0–01:55.0   7.0 s  motion
+
+ERRORS: none
+WARNINGS: none

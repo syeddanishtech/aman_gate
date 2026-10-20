@@ -1,0 +1,50 @@
+AMAN GATE — VOICEOVER SCRIPT v1 (2026-10-20)
+Read calm, plain, credible. ~150 wpm inside each line; breathe in the gaps.
+Pronounce: AMAN = "ah-MAHN" (Urdu: safety). ACL = "A-C-L". Prompt injection = two words, even stress.
+Total words: 224. Speaking time: 102.0 s. Spoken rate: 132 wpm.
+Timecodes are the TARGET slot for each line. Record each line as its own take; editor places it.
+
+── 1. HOOK  [00:00.0–00:10.0]
+  VO01  00:00.6  (4.2 s)  AI assistants are gaining access to our files and business tools.
+  VO02  00:05.2  (3.4 s)  But not every document can be trusted.
+
+── 2. STAKES  [00:10.0–00:25.0]
+  VO03  00:10.4  (4.6 s)  A procurement officer asks an AI assistant to compare two supplier quotes.
+  VO04  00:15.3  (2.1 s)  But one quote hides an instruction:
+  VO05  00:17.6  (4.0 s)  open the restricted budget, and send it to an outside address.
+  VO06  00:22.0  (2.7 s)  That's called indirect prompt injection.
+
+── 3. SOLUTION REVEAL  [00:25.0–00:39.0]
+  VO07  00:25.6  (2.0 s)  Meet AMAN Gate:
+  VO08  00:27.8  (3.8 s)  a locally deployed security gateway that independently checks
+  VO09  00:31.8  (3.8 s)  what an AI assistant may read, where it may send data,
+  VO10  00:35.8  (2.8 s)  and which actions need human approval.
+
+── 4. ARCHITECTURE  [00:39.0–00:58.0]
+  VO11  00:39.6  (3.8 s)  These checks run on the server, outside the AI model.
+  VO12  00:43.8  (3.8 s)  Every tool call the assistant proposes passes fixed rules:
+  VO13  00:47.7  (5.5 s)  permitted tools, strict arguments, document access, approved destinations,
+  VO14  00:53.4  (4.4 s)  and approval for high-impact sends. Anything unknown is denied.
+
+── 5. LIVE ATTACK REPLAY (REAL CAPTURE)  [00:58.0–01:23.0]
+  VO15  00:58.3  (4.0 s)  Here is the real prototype: one scenario, run two ways.
+  VO16  01:02.5  (4.4 s)  Without enforcement, the scripted assistant follows the hidden note
+  VO17  01:07.1  (3.8 s)  and exposes the restricted budget, inside a lab sandbox.
+  VO18  01:11.3  (3.0 s)  Through AMAN Gate, the comparison is allowed.
+  VO19  01:14.6  (3.2 s)  The budget read is denied by document permissions.
+  VO20  01:17.9  (4.5 s)  The outbound send is blocked. Unapproved addresses are refused.
+
+── 6. HUMAN APPROVAL + EVIDENCE (REAL CAPTURE)  [01:23.0–01:38.0]
+  VO21  01:23.4  (4.2 s)  Sensitive actions that are allowed still wait for a second person:
+  VO22  01:27.7  (3.6 s)  a finance manager approves, and it runs only once.
+  VO23  01:31.4  (3.7 s)  Every decision lands in a tamper-evident, chained audit log
+  VO24  01:35.3  (2.6 s)  that security teams can verify.
+
+── 7. USE CASES  [01:38.0–01:48.0]
+  VO25  01:38.6  (5.0 s)  Designed for institutions that need useful AI automation
+  VO26  01:43.8  (3.6 s)  without surrendering control of sensitive data.
+
+── 8. CLOSING  [01:48.0–01:55.0]
+  VO27  01:48.8  (1.6 s)  AMAN Gate.
+  VO28  01:50.5  (3.9 s)  Trust the task. Verify every action.
+

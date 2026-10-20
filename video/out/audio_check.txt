@@ -1,0 +1,39 @@
+AMAN Gate audio check — 2026-10-20T15:26:42.607Z
+music_bed.wav: original synthesis (D minor, 84 bpm, resolves to D major at 108.4s)
+  integrated -28.0 LUFS (target -28), peak -14.4 dBFS, length 115.00 s
+
+Guide VO fit (Windows SAPI scratch voice; speech trimmed of leading/trailing silence):
+  VO01 slot 4.20s  speech 3.95s  fits  AI assistants are gaining access to our files and business tools.
+  VO02 slot 3.40s  speech 2.18s  fits  But not every document can be trusted.
+  VO03 slot 4.60s  speech 4.50s  fits  A procurement officer asks an AI assistant to compare two supplier quotes.
+  VO04 slot 2.10s  speech 2.07s  fits  But one quote hides an instruction:
+  VO05 slot 4.00s  speech 3.69s  fits  open the restricted budget, and send it to an outside address.
+  VO06 slot 2.70s  speech 2.25s  fits  That's called indirect prompt injection.
+  VO07 slot 2.00s  speech 1.00s  fits  Meet AMAN Gate:
+  VO08 slot 3.80s  speech 3.72s  fits  a locally deployed security gateway that independently checks
+  VO09 slot 3.80s  speech 3.22s  fits  what an AI assistant may read, where it may send data,
+  VO10 slot 2.80s  speech 2.14s  fits  and which actions need human approval.
+  VO11 slot 3.80s  speech 3.13s  fits  These checks run on the server, outside the AI model.
+  VO12 slot 3.80s  speech 3.66s  fits  Every tool call the assistant proposes passes fixed rules:
+  VO13 slot 5.50s  speech 5.45s  fits  permitted tools, strict arguments, document access, approved destinations,
+  VO14 slot 4.40s  speech 4.32s  fits  and approval for high-impact sends. Anything unknown is denied.
+  VO15 slot 4.00s  speech 3.91s  fits  Here is the real prototype: one scenario, run two ways.
+  VO16 slot 4.40s  speech 4.00s  fits  Without enforcement, the scripted assistant follows the hidden note
+  VO17 slot 3.80s  speech 3.85s  fits  and exposes the restricted budget, inside a lab sandbox.
+  VO18 slot 3.00s  speech 2.47s  fits  Through AMAN Gate, the comparison is allowed.
+  VO19 slot 3.20s  speech 2.69s  fits  The budget read is denied by document permissions.
+  VO20 slot 4.50s  speech 4.39s  fits  The outbound send is blocked. Unapproved addresses are refused.
+  VO21 slot 4.20s  speech 3.71s  fits  Sensitive actions that are allowed still wait for a second person:
+  VO22 slot 3.60s  speech 3.48s  fits  a finance manager approves, and it runs only once.
+  VO23 slot 3.70s  speech 3.60s  fits  Every decision lands in a tamper-evident, chained audit log
+  VO24 slot 2.60s  speech 2.02s  fits  that security teams can verify.
+  VO25 slot 5.00s  speech 3.63s  fits  Designed for institutions that need useful AI automation
+  VO26 slot 3.60s  speech 2.69s  fits  without surrendering control of sensitive data.
+  VO27 slot 1.60s  speech 0.72s  fits  AMAN Gate.
+  VO28 slot 3.90s  speech 3.22s  fits  Trust the task. Verify every action.
+
+guide_vo.wav: -16.0 LUFS (mono measured as dual-mono), peak -1.8 dBFS
+guide_mix.wav: -16.0 LUFS integrated, peak -1.5 dBFS
+VO-to-music gap: 12 LU
+
+OVERRUNS: none

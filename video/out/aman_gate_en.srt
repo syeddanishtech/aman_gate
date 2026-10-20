@@ -1,0 +1,131 @@
+1
+00:00:00,600 --> 00:00:04,800
+AI assistants are gaining access
+to our files and business tools.
+
+2
+00:00:05,200 --> 00:00:08,600
+But not every document can be trusted.
+
+3
+00:00:10,400 --> 00:00:15,000
+A procurement officer asks an AI
+assistant to compare two supplier quotes.
+
+4
+00:00:15,300 --> 00:00:17,400
+But one quote hides an instruction:
+
+5
+00:00:17,600 --> 00:00:21,600
+open the restricted budget,
+and send it to an outside address.
+
+6
+00:00:22,000 --> 00:00:24,700
+That's called indirect prompt injection.
+
+7
+00:00:25,600 --> 00:00:27,600
+Meet AMAN Gate:
+
+8
+00:00:27,800 --> 00:00:31,600
+a locally deployed security
+gateway that independently checks
+
+9
+00:00:31,800 --> 00:00:35,600
+what an AI assistant may read,
+where it may send data,
+
+10
+00:00:35,800 --> 00:00:38,600
+and which actions need human approval.
+
+11
+00:00:39,600 --> 00:00:43,400
+These checks run on the server,
+outside the AI model.
+
+12
+00:00:43,800 --> 00:00:47,600
+Every tool call the assistant
+proposes passes fixed rules:
+
+13
+00:00:47,700 --> 00:00:53,200
+permitted tools, strict arguments,
+document access, approved destinations,
+
+14
+00:00:53,400 --> 00:00:57,800
+and approval for high-impact sends.
+Anything unknown is denied.
+
+15
+00:00:58,300 --> 00:01:02,300
+Here is the real prototype:
+one scenario, run two ways.
+
+16
+00:01:02,500 --> 00:01:06,900
+Without enforcement, the scripted
+assistant follows the hidden note
+
+17
+00:01:07,100 --> 00:01:10,900
+and exposes the restricted
+budget, inside a lab sandbox.
+
+18
+00:01:11,300 --> 00:01:14,300
+Through AMAN Gate, the
+comparison is allowed.
+
+19
+00:01:14,600 --> 00:01:17,800
+The budget read is denied
+by document permissions.
+
+20
+00:01:17,900 --> 00:01:22,400
+The outbound send is blocked.
+Unapproved addresses are refused.
+
+21
+00:01:23,400 --> 00:01:27,600
+Sensitive actions that are allowed
+still wait for a second person:
+
+22
+00:01:27,700 --> 00:01:31,300
+a finance manager approves,
+and it runs only once.
+
+23
+00:01:31,400 --> 00:01:35,100
+Every decision lands in a
+tamper-evident, chained audit log
+
+24
+00:01:35,300 --> 00:01:37,900
+that security teams can verify.
+
+25
+00:01:38,600 --> 00:01:43,600
+Designed for institutions
+that need useful AI automation
+
+26
+00:01:43,800 --> 00:01:47,400
+without surrendering
+control of sensitive data.
+
+27
+00:01:48,800 --> 00:01:50,400
+AMAN Gate.
+
+28
+00:01:50,500 --> 00:01:54,400
+Trust the task. Verify every action.

@@ -1,0 +1,142 @@
+{
+  "policy_version": "aman-policy-2026.10-v1",
+  "policies": [
+    {
+      "policy_id": "POL-TOOL-ALLOWLIST-v1",
+      "title": "Tool allowlist",
+      "rule": "Only the five registered tools exist. Any other tool name is denied (UNKNOWN_TOOL).",
+      "tools": [
+        "read_document",
+        "compare_quotations",
+        "draft_purchase_summary",
+        "send_report",
+        "simulated_external_sink"
+      ]
+    },
+    {
+      "policy_id": "POL-SCHEMA-v1",
+      "title": "Strict argument schemas",
+      "rule": "Pydantic strict mode, extra fields forbidden, max depth 4, max 8192 bytes, canonical id patterns."
+    },
+    {
+      "policy_id": "POL-RBAC-TOOLS-v1",
+      "title": "Role-to-tool permissions",
+      "rule": "Role is read from the database for every call; token claims and client headers are ignored.",
+      "matrix": {
+        "read_document": [
+          "finance_manager",
+          "junior_clerk",
+          "procurement_officer",
+          "security_analyst"
+        ],
+        "compare_quotations": [
+          "finance_manager",
+          "junior_clerk",
+          "procurement_officer"
+        ],
+        "draft_purchase_summary": [
+          "finance_manager",
+          "procurement_officer"
+        ],
+        "send_report": [
+          "finance_manager",
+          "procurement_officer"
+        ],
+        "simulated_external_sink": []
+      }
+    },
+    {
+      "policy_id": "POL-DOC-ACL-v1",
+      "title": "Per-user document ACL",
+      "rule": "Checked before every retrieval, including retrievals requested inside other tools. Cross-tenant ids look identical to non-existent ids."
+    },
+    {
+      "policy_id": "POL-DEST-ALLOWLIST-v1",
+      "title": "Destination allowlist",
+      "rule": "Reports may only go to allowlisted university.test recipients in the local simulator. example.test is explicitly unapproved.",
+      "allowed": {
+        "finance-approvals@university.test": "Finance approvals desk (local simulator)",
+        "procurement-records@university.test": "Procurement records archive (local simulator)"
+      }
+    },
+    {
+      "policy_id": "POL-REPORT-OWNER-v1",
+      "title": "Report ownership",
+      "rule": "Only the drafting user may send a report; only internal-classification reports may be sent."
+    },
+    {
+      "policy_id": "POL-APPROVAL-SEND-v1",
+      "title": "Two-person approval for send_report",
+      "rule": "send_report creates a pending approval bound to the exact arguments. A different finance_manager must approve before expiry; execution happens once (compare-and-set)."
+    },
+    {
+      "policy_id": "POL-SINK-DENY-v1",
+      "title": "External sink forbidden",
+      "rule": "simulated_external_sink is never callable through the gateway, for any role."
+    },
+    {
+      "policy_id": "ADVISORY-RISK-v1",
+      "title": "Advisory injection risk (non-enforcing)",
+      "rule": "ML + heuristic scores are shown to analysts but never change an allow/deny decision."
+    }
+  ],
+  "tools": {
+    "read_document": {
+      "roles": [
+        "finance_manager",
+        "junior_clerk",
+        "procurement_officer",
+        "security_analyst"
+      ],
+      "sensitivity": "low",
+      "requires_approval": false,
+      "approver_role": null,
+      "policy_id": "POL-DOC-ACL-v1"
+    },
+    "compare_quotations": {
+      "roles": [
+        "finance_manager",
+        "junior_clerk",
+        "procurement_officer"
+      ],
+      "sensitivity": "low",
+      "requires_approval": false,
+      "approver_role": null,
+      "policy_id": "POL-RBAC-TOOLS-v1"
+    },
+    "draft_purchase_summary": {
+      "roles": [
+        "finance_manager",
+        "procurement_officer"
+      ],
+      "sensitivity": "medium",
+      "requires_approval": false,
+      "approver_role": null,
+      "policy_id": "POL-RBAC-TOOLS-v1"
+    },
+    "send_report": {
+      "roles": [
+        "finance_manager",
+        "procurement_officer"
+      ],
+      "sensitivity": "high",
+      "requires_approval": true,
+      "approver_role": "finance_manager",
+      "policy_id": "POL-APPROVAL-SEND-v1"
+    },
+    "simulated_external_sink": {
+      "roles": [],
+      "sensitivity": "forbidden",
+      "requires_approval": false,
+      "approver_role": null,
+      "policy_id": "POL-SINK-DENY-v1"
+    }
+  },
+  "allowed_destinations": {
+    "finance-approvals@university.test": "Finance approvals desk (local simulator)",
+    "procurement-records@university.test": "Procurement records archive (local simulator)"
+  },
+  "explicitly_unapproved_domains": [
+    "example.test"
+  ]
+}
