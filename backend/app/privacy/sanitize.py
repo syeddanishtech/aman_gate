@@ -23,7 +23,7 @@ import hashlib
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
-from .detectors import detect, fold
+from .detectors import TOKEN_RE, detect, fold
 from .graph import BODY_KIND, DisclosureElement, DisclosureGraph, TextSegment, canonical_json
 from .policy import (
     DECISION_RECORD_VERSION,
@@ -109,6 +109,21 @@ def _render(element: DisclosureElement, action: Action, pseud: _Pseudonymizer) -
     if action is Action.REDACT:
         return f"[REDACTED:{element.element_type}]"
     raise ValueError(f"action {action.value} cannot be rendered")
+
+
+def _check_replacement(element: DisclosureElement, action: Action, rep: str) -> None:
+    """Self-check of every replacement before it is used or recorded: it must be exactly the placeholder
+    shape its action promises and must not carry the original text. Raises, which blocks the export."""
+    if action is Action.KEEP:
+        ok = rep == element.text
+    elif action is Action.OMIT:
+        ok = rep == ""
+    elif action is Action.GENERALIZE:
+        ok = rep.startswith("[") and rep.endswith("]") and fold(element.text) not in fold(rep)
+    else:  # PSEUDONYMIZE, REDACT
+        ok = TOKEN_RE.fullmatch(rep) is not None
+    if not ok:
+        raise ValueError("renderer produced a replacement that does not match its action")
 
 
 # ---------------------------------------------------------------------------- record + blocked artifacts
@@ -249,6 +264,7 @@ def _sanitize(segments: Sequence[TextSegment], *, source_sha256: str, task: str,
                 raise ValueError("overlapping elements reached the renderer")
             action, _ = decisions[el.element_id]
             rep = _render(el, action, pseud)
+            _check_replacement(el, action, rep)
             replacements[el.element_id] = rep
             pieces.append(seg.text[pos:el.start])
             pieces.append(rep)
