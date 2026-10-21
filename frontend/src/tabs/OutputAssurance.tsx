@@ -21,7 +21,15 @@ export default function OutputAssurance() {
   const integrity = a ? readIntegrity(a.placeholder_integrity) : null;
   const leaks = a?.leaks ?? [];
   const flags = a?.flags ?? [];
-  const verdict: Verdict | null = !a ? null : leaks.length > 0 ? "FAIL" : integrity?.ok === false || flags.length > 0 ? "REVIEW" : "PASS";
+  // B15: a PASS must be earned. It requires placeholder integrity to be POSITIVELY verified (ok === true);
+  // if integrity is "not determined" (null, e.g. no vault session) or broken, the verdict is REVIEW, never PASS.
+  const verdict: Verdict | null = !a
+    ? null
+    : leaks.length > 0
+    ? "FAIL"
+    : integrity?.ok === true && flags.length === 0
+    ? "PASS"
+    : "REVIEW";
 
   // Demo helper: append a real original value from the analyzed artifact (or the lab canary) to the text.
   function injectLeak() {

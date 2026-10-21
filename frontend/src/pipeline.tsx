@@ -191,9 +191,10 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
 
   const checkResponse = useCallback(
     async (text: string) => {
+      const artifactId = ref.current.analysis?.data.safe_artifact_id || undefined;
       set({ busy: "check", error: null, assuranceInput: text });
       try {
-        const a = await assuranceApi.check(text);
+        const a = await assuranceApi.check(text, artifactId);
         set({ assurance: a });
       } catch (e) {
         set({ error: errMsg(e) });
@@ -212,7 +213,7 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
     try {
       const b = await bridgeApi.send(artifactId, s.providerMode);
       set({ bridge: b, assuranceInput: b.data.response });
-      const a = await assuranceApi.check(b.data.response);
+      const a = await assuranceApi.check(b.data.response, artifactId);
       set({ assurance: a });
     } catch (e) {
       set({ error: errMsg(e) });

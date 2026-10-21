@@ -328,13 +328,15 @@ export const bridge = {
 };
 
 export const assurance = {
-  check: (response: string) =>
+  // `artifactId` names the vault session stored at analyze time; without it the backend has no token map,
+  // so placeholder integrity is "not determined" and rehydration is null. Always pass it when known.
+  check: (response: string, artifactId?: string) =>
     withMockFallback<AssuranceResponse>(
       "assuranceCheck",
       () =>
         request<AssuranceResponse>(ENDPOINTS.assuranceCheck, {
           method: "POST",
-          body: JSON.stringify({ response }),
+          body: JSON.stringify(artifactId ? { response, artifact_id: artifactId } : { response }),
         }),
       () => mock.assuranceCheck(response),
     ),
