@@ -1,0 +1,4 @@
+# Shell scripts must stay LF so they run in Linux (GitHub Codespaces / Docker), even when edited on Windows.
+*.sh text eol=lf
+.devcontainer/*.sh text eol=lf
+scripts/*.sh text eol=lf
