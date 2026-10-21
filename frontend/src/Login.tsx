@@ -39,7 +39,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-allow/10 ring-1 ring-allow/40">
-            <ShieldCheck className="text-allow" />
+            <ShieldCheck className="text-allow-ink" />
           </div>
           <h1 className="text-xl font-bold text-slate-100">AMAN Gate</h1>
           <p className="text-sm text-slate-400">Sovereign AI Agent Security Gateway</p>
@@ -47,7 +47,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
         </div>
 
         <div className="card p-5">
-          <div className="mb-3 flex items-center gap-2 rounded-lg border border-approve/30 bg-approve/5 px-3 py-2 text-xs text-approve">
+          <div className="mb-3 flex items-center gap-2 rounded-lg border border-approve/30 bg-approve/5 px-3 py-2 text-xs text-approve-ink">
             <FlaskConical size={14} /> Nonproduction demo accounts — synthetic data only.
           </div>
 
@@ -91,7 +91,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
               {busy ? <Spinner /> : "Sign in"}
             </button>
           </div>
-          {error && <p className="mt-2 text-xs text-deny">{error}</p>}
+          {error && <p className="mt-2 text-xs text-deny-ink">{error}</p>}
           <p className="mt-3 mono text-[11px] text-slate-600">demo password: {password || "…"}</p>
         </div>
       </div>

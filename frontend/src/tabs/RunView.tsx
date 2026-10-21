@@ -63,7 +63,7 @@ export function BaselineSteps({ steps, summary }: { steps: any[]; summary: any }
   return (
     <div className="space-y-2">
       <div className="rounded-lg border border-deny/30 bg-deny/5 p-2.5 text-[11px] text-slate-300">
-        <b className="text-deny">Baseline lab (no enforcement).</b> Intentionally insufficient
+        <b className="text-deny-ink">Baseline lab (no enforcement).</b> Intentionally insufficient
         authorization. Safe local sandbox — no network, no real files.
       </div>
       {steps.map((s, i) => (
@@ -73,11 +73,11 @@ export function BaselineSteps({ steps, summary }: { steps: any[]; summary: any }
             <Pill tone="deny">{String(s.decision).replace(/_/g, " ")}</Pill>
           </div>
           <div className="mono mt-1 text-[11px] text-slate-500">{JSON.stringify(s.args)}</div>
-          {s.lab_note && <p className="mt-1 text-[11px] text-approve">{s.lab_note}</p>}
+          {s.lab_note && <p className="mt-1 text-[11px] text-approve-ink">{s.lab_note}</p>}
         </div>
       ))}
       {summary?.exposed_restricted_resources?.length > 0 && (
-        <div className="rounded-lg border border-deny/40 bg-deny/10 p-2.5 text-[11px] text-deny">
+        <div className="rounded-lg border border-deny/40 bg-deny/10 p-2.5 text-[11px] text-deny-ink">
           Without AMAN Gate the baseline exposed restricted resources:{" "}
           <b className="mono">{summary.exposed_restricted_resources.join(", ")}</b>
         </div>
@@ -104,7 +104,7 @@ export function SplitRun({ result }: { result: any }) {
           </span>
         </div>
         {gated?.followed_injection ? (
-          <div className="mb-3 flex items-center gap-2 rounded-lg border border-deny/30 bg-deny/5 px-3 py-2 text-[11px] text-deny">
+          <div className="mb-3 flex items-center gap-2 rounded-lg border border-deny/30 bg-deny/5 px-3 py-2 text-[11px] text-deny-ink">
             <AlertTriangle size={13} /> The assistant was manipulated by text hidden in{" "}
             {gated.injection_sources?.join(", ")} and tried extra actions.
           </div>
@@ -122,9 +122,9 @@ export function SplitRun({ result }: { result: any }) {
 
       <div className="card border-allow/20 p-4">
         <div className="mb-3 flex items-center gap-2">
-          <ShieldCheck size={18} className="text-allow" />
+          <ShieldCheck size={18} className="text-allow-ink" />
           <h3 className="text-sm font-semibold text-slate-100">AMAN Gate Security Decision</h3>
-          <span className="ml-auto tag border border-allow/30 bg-allow/10 text-allow">
+          <span className="ml-auto tag border border-allow/30 bg-allow/10 text-allow-ink">
             <ArrowRight size={11} /> {blocked} blocked / held
           </span>
         </div>

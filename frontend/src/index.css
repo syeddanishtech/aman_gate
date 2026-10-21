@@ -1,24 +1,70 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Inter (variable, SIL OFL 1.1 — see src/fonts/INTER-LICENSE.txt) is vendored under src/fonts so the UI
+   renders identically offline. No Google Fonts / CDN request is made. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/inter-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/inter-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
   margin: 0;
-  background: #070b16;
-  color: #e6edf6;
-  font-family: "Inter", system-ui, sans-serif;
+  background: #f7f9fc;
+  color: #0f233f;
+  font-family: "Inter Variable", Inter, "Segoe UI", system-ui, sans-serif;
+  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* WCAG 2.2 — visible focus (2.4.7 / 2.4.11) on every interactive element. */
+:focus-visible {
+  outline: 2px solid #087f8c;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* WCAG 1.4.11 — form-control boundaries need >= 3:1 against the white card (hairline navy-700 is only ~1.4:1). */
+select {
+  max-width: 100%;
+}
+select,
+textarea,
+input:not([type="checkbox"]):not([type="radio"]) {
+  border-color: #7f90a8 !important;
+  background-color: #ffffff;
+  color: #0f233f;
+}
+select:focus,
+textarea:focus,
+input:focus {
+  border-color: #087f8c !important;
 }
 
 ::-webkit-scrollbar {
@@ -26,31 +72,43 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #26395c;
+  background: #b4c0d1;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @layer components {
   .card {
-    @apply rounded-xl border border-navy-700 bg-navy-850/80 shadow-lg shadow-black/20;
+    @apply rounded-xl border border-navy-700 bg-white shadow-card;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold
       transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-allow/90 text-navy-950 hover:bg-allow;
+    @apply btn bg-allow text-white hover:bg-allow-dim;
   }
   .btn-ghost {
-    @apply btn border border-navy-600 bg-navy-800 text-slate-200 hover:bg-navy-700;
+    @apply btn border border-navy-600 bg-white text-ink hover:bg-navy-800;
   }
   .tag {
     @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
   }
   .mono {
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: Consolas, "SF Mono", ui-monospace, monospace;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500;
   }
 }

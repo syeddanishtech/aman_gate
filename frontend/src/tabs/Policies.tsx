@@ -67,7 +67,7 @@ export default function Policies({ refreshKey }: { refreshKey: number }) {
       <Card title="Destination allowlist" subtitle="Reports may only reach these local-simulator recipients. example.test is explicitly unapproved.">
         <div className="flex flex-wrap gap-2">
           {Object.entries(data.allowed_destinations).map(([dest, label]) => (
-            <span key={dest} className="tag border border-allow/30 bg-allow/10 text-allow">
+            <span key={dest} className="tag border border-allow/30 bg-allow/10 text-allow-ink">
               <Mail size={12} /> {dest} — {String(label)}
             </span>
           ))}
@@ -78,7 +78,7 @@ export default function Policies({ refreshKey }: { refreshKey: number }) {
         {data.policies.map((p: any) => (
           <div key={p.policy_id} className="card p-4">
             <div className="flex items-center gap-2">
-              <ScrollText size={15} className="text-allow" />
+              <ScrollText size={15} className="text-allow-ink" />
               <h3 className="text-sm font-semibold text-slate-100">{p.title}</h3>
               <span className="mono ml-auto text-[10px] text-slate-600">{p.policy_id}</span>
             </div>

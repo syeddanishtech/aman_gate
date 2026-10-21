@@ -4,12 +4,12 @@ import type { ReactNode } from "react";
 export type DecisionKind = "ALLOW" | "DENY" | "NEEDS_APPROVAL" | string;
 
 export function decisionStyle(d: DecisionKind) {
-  if (d === "ALLOW") return { text: "text-allow", bg: "bg-allow/10", border: "border-allow/40", Icon: Check };
-  if (d === "DENY") return { text: "text-deny", bg: "bg-deny/10", border: "border-deny/40", Icon: CircleSlash };
+  if (d === "ALLOW") return { text: "text-allow-ink", bg: "bg-allow/10", border: "border-allow/40", Icon: Check };
+  if (d === "DENY") return { text: "text-deny-ink", bg: "bg-deny/10", border: "border-deny/40", Icon: CircleSlash };
   if (d === "NEEDS_APPROVAL")
-    return { text: "text-approve", bg: "bg-approve/10", border: "border-approve/40", Icon: Clock };
+    return { text: "text-approve-ink", bg: "bg-approve/10", border: "border-approve/40", Icon: Clock };
   if (d === "BASELINE_NO_ENFORCEMENT" || d === "EXECUTED_NO_CHECK")
-    return { text: "text-deny", bg: "bg-deny/10", border: "border-deny/40", Icon: ShieldAlert };
+    return { text: "text-deny-ink", bg: "bg-deny/10", border: "border-deny/40", Icon: ShieldAlert };
   return { text: "text-slate-300", bg: "bg-navy-700/40", border: "border-navy-600", Icon: Info };
 }
 
@@ -66,11 +66,11 @@ export function Stat({
 }) {
   const toneCls =
     tone === "deny"
-      ? "text-deny"
+      ? "text-deny-ink"
       : tone === "approve"
-      ? "text-approve"
+      ? "text-approve-ink"
       : tone === "allow"
-      ? "text-allow"
+      ? "text-allow-ink"
       : "text-slate-100";
   return (
     <div className="card px-4 py-3" title={hint}>
@@ -89,9 +89,9 @@ export function RoleBadge({ role }: { role: string }) {
 export function Pill({ children, tone = "default" }: { children: ReactNode; tone?: string }) {
   const map: Record<string, string> = {
     default: "border-navy-600 bg-navy-800 text-slate-300",
-    allow: "border-allow/40 bg-allow/10 text-allow",
-    deny: "border-deny/40 bg-deny/10 text-deny",
-    approve: "border-approve/40 bg-approve/10 text-approve",
+    allow: "border-allow/40 bg-allow/10 text-allow-ink",
+    deny: "border-deny/40 bg-deny/10 text-deny-ink",
+    approve: "border-approve/40 bg-approve/10 text-approve-ink",
   };
   return <span className={`tag border ${map[tone] || map.default}`}>{children}</span>;
 }

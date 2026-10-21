@@ -66,11 +66,11 @@ export default function Audit({ refreshKey }: { refreshKey: number }) {
             >
               <div className="flex items-center gap-2">
                 {verify.valid ? (
-                  <ShieldCheck className="text-allow" />
+                  <ShieldCheck className="text-allow-ink" />
                 ) : (
-                  <ShieldAlert className="text-deny" />
+                  <ShieldAlert className="text-deny-ink" />
                 )}
-                <span className={`text-lg font-bold ${verify.valid ? "text-allow" : "text-deny"}`}>
+                <span className={`text-lg font-bold ${verify.valid ? "text-allow-ink" : "text-deny-ink"}`}>
                   {verify.valid ? "VERIFIED" : "TAMPER DETECTED"}
                 </span>
               </div>
@@ -80,7 +80,7 @@ export default function Audit({ refreshKey }: { refreshKey: number }) {
                   <Link2 size={10} className="inline" /> head {verify.head_hmac?.slice(0, 32)}…
                 </p>
               ) : (
-                <p className="mt-2 text-[11px] text-deny">
+                <p className="mt-2 text-[11px] text-deny-ink">
                   First bad seq {verify.first_bad_seq}: {verify.problems?.join(", ")}
                 </p>
               )}
@@ -123,7 +123,7 @@ export default function Audit({ refreshKey }: { refreshKey: number }) {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`tag border ${
-                  filter === f ? "border-allow/40 bg-allow/10 text-allow" : "border-navy-600 bg-navy-800 text-slate-400"
+                  filter === f ? "border-allow/40 bg-allow/10 text-allow-ink" : "border-navy-600 bg-navy-800 text-slate-400"
                 }`}
               >
                 {f.replace(/_/g, " ")}
@@ -264,7 +264,7 @@ function EvidenceCard({ ev }: { ev: any }) {
 }
 
 function Metric({ label, value, suffix = "", tone = "default", hint }: any) {
-  const c = tone === "deny" ? "text-deny" : tone === "allow" ? "text-allow" : "text-slate-100";
+  const c = tone === "deny" ? "text-deny-ink" : tone === "allow" ? "text-allow-ink" : "text-slate-100";
   return (
     <div className="rounded-lg border border-navy-700 bg-navy-900/50 px-3 py-2" title={hint}>
       <div className="text-[10px] uppercase tracking-wide text-slate-500">{label}</div>

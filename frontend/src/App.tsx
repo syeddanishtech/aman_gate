@@ -1,45 +1,55 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  ShieldCheck,
-  LayoutDashboard,
-  PlayCircle,
-  ScrollText,
+  ClipboardCheck,
+  Cloud,
   FileLock2,
-  Inbox,
   FileSearch,
-  LogOut,
-  RefreshCw,
   FlaskConical,
+  LayoutDashboard,
+  LogOut,
+  Presentation,
+  RefreshCw,
+  Settings as SettingsIcon,
+  ShieldCheck,
+  ShieldHalf,
+  type LucideIcon,
 } from "lucide-react";
 import { api, getToken, setToken, type User } from "./api";
 import { Spinner, RoleBadge } from "./ui";
 import Login from "./Login";
-import Home from "./tabs/Home";
-import Replay from "./tabs/Replay";
-import Policies from "./tabs/Policies";
-import Documents from "./tabs/Documents";
-import Approvals from "./tabs/Approvals";
-import Audit from "./tabs/Audit";
+import { PipelineProvider, usePipeline } from "./pipeline";
+import { SimulationChip, SimulationWatermark } from "./components/common";
+import type { NavTarget, SectionId } from "./nav";
+import Overview from "./tabs/Overview";
+import ProtectDocuments from "./tabs/ProtectDocuments";
+import Firewall from "./tabs/Firewall";
+import SafeBridge from "./tabs/SafeBridge";
+import OutputAssurance from "./tabs/OutputAssurance";
+import Evidence from "./tabs/Evidence";
+import Settings from "./tabs/Settings";
+import JudgeDemo from "./tabs/JudgeDemo";
 
-type TabId = "home" | "replay" | "policies" | "documents" | "approvals" | "audit";
-
-const TABS: { id: TabId; label: string; Icon: any }[] = [
-  { id: "home", label: "Command Center", Icon: LayoutDashboard },
-  { id: "replay", label: "Scenario Replay", Icon: PlayCircle },
-  { id: "policies", label: "Policies", Icon: ScrollText },
-  { id: "documents", label: "Document Access", Icon: FileLock2 },
-  { id: "approvals", label: "Approval Queue", Icon: Inbox },
-  { id: "audit", label: "Audit & Evidence", Icon: FileSearch },
+const NAV: { id: SectionId; label: string; Icon: LucideIcon }[] = [
+  { id: "overview", label: "Overview", Icon: LayoutDashboard },
+  { id: "protect", label: "Protect Documents", Icon: FileLock2 },
+  { id: "firewall", label: "AI Agent Firewall", Icon: ShieldHalf },
+  { id: "bridge", label: "Safe Cloud Bridge", Icon: Cloud },
+  { id: "assurance", label: "Output Assurance", Icon: ClipboardCheck },
+  { id: "evidence", label: "Evidence & Research", Icon: FileSearch },
+  { id: "settings", label: "Settings", Icon: SettingsIcon },
 ];
+
+const SECTIONS = new Set<string>([...NAV.map((n) => n.id), "judge"]);
+
+function parseHash(): NavTarget {
+  const [section, sub] = window.location.hash.replace(/^#\/?/, "").split("/");
+  return SECTIONS.has(section) ? { section: section as SectionId, sub: sub || undefined } : { section: "overview" };
+}
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [tab, setTab] = useState<TabId>("home");
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [resetting, setResetting] = useState(false);
-
-  const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   useEffect(() => {
     if (!getToken()) {
@@ -53,22 +63,6 @@ export default function App() {
       .finally(() => setLoading(false));
   }, []);
 
-  function logout() {
-    setToken(null);
-    setUser(null);
-  }
-
-  async function resetDemo() {
-    if (user?.role !== "security_analyst") return;
-    setResetting(true);
-    try {
-      await api.reset();
-      refresh();
-    } finally {
-      setResetting(false);
-    }
-  }
-
   if (loading)
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -78,77 +72,169 @@ export default function App() {
   if (!user) return <Login onLogin={setUser} />;
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-navy-700 bg-navy-950/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1680px] items-center gap-4 px-5 py-3">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-allow/10 ring-1 ring-allow/40">
-              <ShieldCheck className="text-allow" size={20} />
-            </div>
-            <div>
-              <div className="text-sm font-bold leading-tight text-slate-100">AMAN Gate</div>
-              <div className="text-[11px] leading-tight text-slate-500">
-                Trust the task. Verify every action.
-              </div>
-            </div>
+    <PipelineProvider refreshKey={refreshKey}>
+      <Shell
+        user={user}
+        refreshKey={refreshKey}
+        refresh={() => setRefreshKey((k) => k + 1)}
+        logout={() => {
+          setToken(null);
+          setUser(null);
+        }}
+      />
+    </PipelineProvider>
+  );
+}
+
+function Shell({ user, refreshKey, refresh, logout }: { user: User; refreshKey: number; refresh: () => void; logout: () => void }) {
+  const p = usePipeline();
+  const [nav, setNav] = useState<NavTarget>(parseHash);
+  const [resetting, setResetting] = useState(false);
+
+  useEffect(() => {
+    const onHash = () => setNav(parseHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const go = useCallback((t: NavTarget) => {
+    window.location.hash = `/${t.section}${t.sub ? `/${t.sub}` : ""}`;
+    setNav(t);
+    window.scrollTo({ top: 0 });
+  }, []);
+  const setSub = (sub: string) => go({ section: nav.section, sub });
+
+  async function resetDemo() {
+    if (user.role !== "security_analyst") return;
+    setResetting(true);
+    try {
+      await api.reset();
+      p.reset();
+      refresh();
+    } finally {
+      setResetting(false);
+    }
+  }
+
+  // Sections that render mock data or the local simulator carry the persistent Simulation watermark.
+  const simulated =
+    ["overview", "bridge", "assurance", "judge"].includes(nav.section) || (nav.section === "protect" && nav.sub !== "registry");
+  const reasons = p.simulationReasons.length ? p.simulationReasons : ["Local simulator"];
+
+  return (
+    <div className="min-h-screen lg:grid lg:grid-cols-[248px_minmax(0,1fr)]">
+      <button
+        className="sr-only z-50 rounded bg-white px-3 py-2 text-sm font-semibold text-ink shadow-lift focus:not-sr-only focus:fixed focus:left-3 focus:top-3"
+        onClick={() => document.getElementById("main")?.focus()}
+      >
+        Skip to main content
+      </button>
+      {simulated && <SimulationWatermark />}
+
+      {/* Sidebar */}
+      <aside className="flex flex-col gap-4 border-b border-navy-700 bg-white p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-allow text-white shadow-card">
+            <ShieldCheck size={22} aria-hidden />
           </div>
-
-          <span className="tag border border-approve/30 bg-approve/5 text-approve">
-            <FlaskConical size={12} /> Synthetic data — Local-only security demonstration
-          </span>
-
-          <div className="ml-auto flex items-center gap-3">
-            <button className="btn-ghost" onClick={refresh} title="Refresh data">
-              <RefreshCw size={14} /> Refresh
-            </button>
-            {user.role === "security_analyst" && (
-              <button className="btn-ghost" onClick={resetDemo} disabled={resetting} title="Reset demo data">
-                {resetting ? <Spinner /> : <FlaskConical size={14} />} Reset demo
-              </button>
-            )}
-            <div className="flex items-center gap-2 border-l border-navy-700 pl-3">
-              <div className="text-right">
-                <div className="text-xs font-medium text-slate-200">{user.display_name.split(" (")[0]}</div>
-                <div className="text-[11px] text-slate-500">{user.username}</div>
-              </div>
-              <RoleBadge role={user.role} />
-              <button className="btn-ghost px-2" onClick={logout} title="Sign out">
-                <LogOut size={14} />
-              </button>
-            </div>
+          <div className="min-w-0">
+            <div className="text-base font-bold leading-tight text-slate-100">AMAN Gate</div>
+            <div className="text-[11px] leading-tight text-slate-500">Protect documents before AI sees them</div>
           </div>
         </div>
 
-        <nav className="mx-auto flex max-w-[1680px] gap-1 overflow-x-auto px-4">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors ${
-                tab === t.id
-                  ? "border-allow text-allow"
-                  : "border-transparent text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              <t.Icon size={15} /> {t.label}
-            </button>
-          ))}
+        <button
+          onClick={() => go({ section: "judge" })}
+          aria-current={nav.section === "judge" ? "page" : undefined}
+          className={`flex items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left transition-colors ${
+            nav.section === "judge" ? "border-allow bg-allow text-white" : "border-allow bg-white text-allow-ink hover:bg-allow/5"
+          }`}
+        >
+          <Presentation size={18} aria-hidden />
+          <span>
+            <span className="block text-sm font-bold leading-tight">Judge Demo</span>
+            <span className={`block text-[11px] leading-tight ${nav.section === "judge" ? "text-white/90" : "text-slate-500"}`}>Guided tour · about 1 minute</span>
+          </span>
+        </button>
+
+        <nav aria-label="Primary" className="flex flex-wrap gap-1 lg:flex-col">
+          {NAV.map(({ id, label, Icon }) => {
+            const on = nav.section === id;
+            return (
+              <button
+                key={id}
+                onClick={() => go({ section: id })}
+                aria-current={on ? "page" : undefined}
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+                  on ? "bg-allow/10 font-semibold text-allow-ink" : "text-slate-300 hover:bg-navy-800"
+                }`}
+              >
+                <Icon size={17} aria-hidden /> {label}
+              </button>
+            );
+          })}
         </nav>
-      </header>
 
-      <main className="mx-auto max-w-[1680px] px-5 py-5">
-        {tab === "home" && <Home refreshKey={refreshKey} goTo={setTab} onChanged={refresh} />}
-        {tab === "replay" && <Replay refreshKey={refreshKey} onChanged={refresh} />}
-        {tab === "policies" && <Policies refreshKey={refreshKey} />}
-        {tab === "documents" && <Documents user={user} refreshKey={refreshKey} onChanged={refresh} />}
-        {tab === "approvals" && <Approvals user={user} refreshKey={refreshKey} onChanged={refresh} />}
-        {tab === "audit" && <Audit refreshKey={refreshKey} />}
-      </main>
+        <div className="mt-auto hidden space-y-3 lg:block">
+          <span className="tag border border-approve/50 bg-approve/10 text-approve-ink">
+            <FlaskConical size={12} aria-hidden /> Synthetic data · local only
+          </span>
+          <div className="flex items-center gap-2 border-t border-navy-700 pt-3">
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-xs font-semibold text-slate-100">{user.display_name.split(" (")[0]}</div>
+              <div className="mt-0.5">
+                <RoleBadge role={user.role} />
+              </div>
+            </div>
+            <button className="btn-ghost px-2" onClick={logout} title="Sign out" aria-label="Sign out">
+              <LogOut size={14} aria-hidden />
+            </button>
+          </div>
+        </div>
+      </aside>
 
-      <footer className="mx-auto max-w-[1680px] px-5 pb-8 pt-2 text-center text-[11px] text-slate-600">
-        AMAN Gate · Northbridge University (fictional) · Synthetic data · Not connected to any network ·
-        Enforcement is server-side and independent of the AI assistant.
-      </footer>
+      {/* Content column */}
+      <div className="flex min-w-0 flex-col">
+        <header className="sticky top-0 z-30 flex flex-wrap items-center gap-3 border-b border-navy-700 bg-page/95 px-6 py-2.5 backdrop-blur xl:px-8">
+          <span className="tag border border-navy-600 bg-white text-slate-300 lg:hidden">
+            <FlaskConical size={12} aria-hidden /> Synthetic data
+          </span>
+          {simulated && <SimulationChip reasons={reasons} />}
+          <div className="ml-auto flex items-center gap-2">
+            <button className="btn-ghost px-3 py-1.5" onClick={refresh} title="Refresh data">
+              <RefreshCw size={14} aria-hidden /> Refresh
+            </button>
+            {user.role === "security_analyst" && (
+              <button className="btn-ghost px-3 py-1.5" onClick={resetDemo} disabled={resetting} title="Reset demo data">
+                {resetting ? <Spinner /> : <FlaskConical size={14} aria-hidden />} Reset demo
+              </button>
+            )}
+            <button className="btn-ghost px-3 py-1.5 lg:hidden" onClick={logout} aria-label="Sign out">
+              <LogOut size={14} aria-hidden />
+            </button>
+          </div>
+        </header>
+
+        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1480px] flex-1 px-6 py-6 outline-none xl:px-8">
+          {nav.section === "overview" && <Overview refreshKey={refreshKey} go={go} />}
+          {nav.section === "protect" && (
+            <ProtectDocuments user={user} refreshKey={refreshKey} onChanged={refresh} go={go} sub={nav.sub} setSub={setSub} />
+          )}
+          {nav.section === "firewall" && (
+            <Firewall user={user} refreshKey={refreshKey} onChanged={refresh} go={go} sub={nav.sub} setSub={setSub} />
+          )}
+          {nav.section === "bridge" && <SafeBridge go={go} />}
+          {nav.section === "assurance" && <OutputAssurance />}
+          {nav.section === "evidence" && <Evidence refreshKey={refreshKey} />}
+          {nav.section === "settings" && <Settings user={user} onReset={resetDemo} resetting={resetting} onModeChanged={refresh} />}
+          {nav.section === "judge" && <JudgeDemo go={go} />}
+        </main>
+
+        <footer className="mx-auto w-full max-w-[1480px] px-6 pb-8 pt-2 text-center text-[11px] text-slate-500 xl:px-8">
+          AMAN Gate · Northbridge University (fictional) · Synthetic data · Not connected to any network · Enforcement is server-side and
+          independent of the AI assistant.
+        </footer>
+      </div>
     </div>
   );
 }

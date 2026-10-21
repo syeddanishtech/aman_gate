@@ -70,7 +70,7 @@ export default function Replay({ refreshKey, onChanged }: { refreshKey: number; 
                   <b>Expected:</b> {selectedScenario.expectation}
                 </p>
                 {selectedScenario.note && (
-                  <p className="mt-1 text-[11px] text-approve">Note: {selectedScenario.note}</p>
+                  <p className="mt-1 text-[11px] text-approve-ink">Note: {selectedScenario.note}</p>
                 )}
               </div>
               <button className="btn-primary shrink-0" disabled={busy} onClick={() => run(selectedScenario.id)}>
@@ -111,7 +111,7 @@ function ParitySummary({ result }: { result: any }) {
     <div className="card p-4">
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-deny/30 bg-deny/5 p-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-deny">
+          <div className="flex items-center gap-2 text-xs font-semibold text-deny-ink">
             <XCircle size={14} /> Baseline (no enforcement)
           </div>
           <p className="mt-1 text-[11px] text-slate-300">
@@ -122,7 +122,7 @@ function ParitySummary({ result }: { result: any }) {
           </p>
         </div>
         <div className="rounded-lg border border-allow/30 bg-allow/5 p-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-allow">
+          <div className="flex items-center gap-2 text-xs font-semibold text-allow-ink">
             <CheckCircle2 size={14} /> AMAN Gate
           </div>
           <p className="mt-1 text-[11px] text-slate-300">
