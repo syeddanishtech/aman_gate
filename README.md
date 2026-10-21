@@ -13,6 +13,22 @@ are hidden inside untrusted supplier documents (indirect prompt injection).
 
 ---
 
+## View it live on GitHub (Codespaces) — one click
+
+Run the **real** app (FastAPI backend + the 2.0 UI) in the cloud, no local setup:
+
+1. On this repo, click **`Code ▾` → `Codespaces` → `Create codespace on main`**.
+2. First time only, wait ~2–3 min while it installs the pinned deps, trains the advisory model and builds
+   the UI (progress shows in the terminal).
+3. A browser tab opens automatically on the forwarded **port 8000** (or open it from the **Ports** tab).
+   Pick a quick-login (e.g. *Ayesha Khan — Procurement Officer*) and try **Protect Documents → PR-2026-118**.
+
+This is the full system with real server-side enforcement — not a mock. The Codespace is private to your
+GitHub account and uses synthetic data only. (GitHub Pages can't host this: the security lives in the Python
+backend, which Pages cannot run.)
+
+---
+
 ## The one idea
 
 An AI assistant's *decisions cannot be trusted* once it has read attacker-controlled content. AMAN Gate
