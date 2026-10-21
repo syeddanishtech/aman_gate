@@ -28,6 +28,19 @@ SOURCE_TRUST_LEVELS: tuple[str, ...] = ("trusted_internal", "untrusted_external"
 _TYPE_RE = re.compile(r"^[A-Z][A-Z_]{1,30}$")
 
 
+BODY_KIND = "body"  # the only segment kind whose (sanitized) text is carried into a safe artifact
+
+
+@dataclass(frozen=True)
+class TextSegment:
+    """One located run of extracted text. Non-body kinds (metadata, comments, tracked deletions, hidden
+    text, links, ...) are scanned for findings but never carried into the safe artifact."""
+
+    locator: str
+    kind: str
+    text: str
+
+
 def sensitivity_rank(sensitivity: str) -> int:
     """Rank of a label; raises KeyError for anything unknown so callers fail closed."""
     return SENSITIVITY_RANK[sensitivity]

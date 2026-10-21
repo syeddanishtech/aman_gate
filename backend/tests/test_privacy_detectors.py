@@ -189,6 +189,24 @@ def test_figure_patterns_are_generated_from_the_integer():
     assert not any(p.search("2,500,001") for p in pats)
 
 
+# ------------------------------------------------------------------ propagation of context-dependent finds
+def test_budget_figure_found_by_label_is_found_everywhere_else_in_the_text():
+    text = "Approved ceiling: PKR 7,100,000. Do not exceed 7100000 or 7.1 million; Rs. 7 100 000 is the cap."
+    assert found(text, "BUDGET_FIGURE") == ["PKR 7,100,000", "7100000", "7.1 million", "Rs. 7 100 000"]
+
+
+def test_account_and_labeled_national_id_are_found_again_without_their_label():
+    assert found("Account No: 0123-4567-8901 ... paid to 012345678901 and 0123 4567 8901",
+                 "ACCOUNT_NUMBER") == ["0123-4567-8901", "012345678901", "0123 4567 8901"]
+    assert found("CNIC: 3520212345671, again 3520212345671", "NATIONAL_ID") == ["3520212345671", "3520212345671"]
+
+
+def test_propagation_does_not_fire_without_a_label_or_for_small_numbers():
+    assert found("Quote total 7,100,000 and also 7100000", "BUDGET_FIGURE") == []
+    assert found("The ceiling of 750 units; 750 in stock", "BUDGET_FIGURE") == []  # too small to propagate
+    assert found("Account: 12345678 and 123456789", "ACCOUNT_NUMBER") == ["12345678"]
+
+
 # ------------------------------------------------------------------ token lookalike
 def test_placeholder_lookalikes_in_source_are_flagged():
     assert found("see [ORG_01] and [REDACTED:CANARY] and [PERSON_123]", "TOKEN_LOOKALIKE") == [
@@ -203,7 +221,8 @@ def test_overlapping_matches_merge_into_one_element_spanning_the_union():
     assert len(g) == 1
     (e,) = g.elements
     assert e.element_type == "EMAIL" and text[e.start:e.end] == "ayesha@northbridge.test"
-    assert any("VOCAB:org:northbridge" in p for p in e.provenance)
+    assert "detector:VOCAB-ORG-v1" in e.provenance and "detector:EMAIL-v1" in e.provenance
+    assert not any("northbridge" in p.lower() for p in e.provenance)  # provenance never spells vocabulary terms
 
 
 def test_strongest_sensitivity_wins_an_overlap():

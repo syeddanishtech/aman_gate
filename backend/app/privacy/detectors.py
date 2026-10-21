@@ -110,6 +110,27 @@ class PatternDetector:
     group: str | int = 0  # which group is the finding (the label before it is not redacted)
     validate: Callable[[str], bool] | None = None
     entity: Callable[[str], str] = _entity_fold
+    # Context-dependent detectors only fire next to a label. "digits" / "amount": once a value is found
+    # that way, every other occurrence of it in the same text (any separators) is a finding too.
+    propagate: str = ""
+
+
+def _amount_value(piece: str) -> int | None:
+    """Integer value of an amount like 'PKR 7,100,000' or '4.5 million'; None if it is not a plain amount."""
+    m = re.fullmatch(r"(?i)\s*(?:pkr|rs\.?|usd|\$)?\s*([\d,.]+?)\s*(million|mn|crore|lakh)?\s*", piece)
+    if not m:
+        return None
+    mult = {"million": 10**6, "mn": 10**6, "crore": 10**7, "lakh": 10**5}.get((m.group(2) or "").lower(), 1)
+    num = m.group(1)
+    try:
+        value = float(num.replace(",", "")) * mult if mult > 1 else float(num.replace(",", "").replace(".", ""))
+    except ValueError:
+        return None
+    return int(round(value)) if value >= 1 else None
+
+
+def _digit_run_pattern(digits: str) -> re.Pattern[str]:
+    return re.compile(r"(?<!\d)" + r"[ -]?".join(digits) + r"(?!\d)")
 
 
 _CURRENCY = r"(?:PKR|Rs\.?|USD|\$)"
@@ -138,7 +159,7 @@ PATTERN_DETECTORS: tuple[PatternDetector, ...] = (
         "NATIONAL-ID-LABELED-v1", "NATIONAL_ID", "CONFIDENTIAL",
         re.compile(r"(?i)\b(?:cnic|nic|national\s*id(?:entity)?)(?:\s*(?:no\.?|number))?\s*[:#-]?\s*(?P<v>\d{13})(?!\d)"),
         "13 contiguous digits directly after a CNIC / NIC / national id label.",
-        priority=80, group="v", entity=_digits),
+        priority=80, group="v", entity=_digits, propagate="digits"),
     PatternDetector(
         "ACCOUNT-IBAN-PK-v1", "ACCOUNT_NUMBER", "CONFIDENTIAL",
         re.compile(r"(?i)(?<![A-Za-z0-9])PK\d{2}[A-Z]{4}\d{16}(?![A-Za-z0-9])"),
@@ -149,13 +170,13 @@ PATTERN_DETECTORS: tuple[PatternDetector, ...] = (
         re.compile(r"(?i)\b(?:a/c|acct?\.?|account)(?:\s*(?:no\.?|number|num|#))?\s*[:#-]?\s*"
                    r"(?P<v>\d(?:[ -]?\d){6,19})(?!\d)"),
         "7-20 digits directly after an account label (a/c, acct, account, account no).",
-        priority=70, group="v", entity=_entity_alnum),
+        priority=70, group="v", entity=_entity_alnum, propagate="digits"),
     PatternDetector(
         "BUDGET-CEILING-CONTEXT-v1", "BUDGET_FIGURE", "RESTRICTED",
         re.compile(r"(?i)\b(?:ceiling|budget\s+(?:cap|limit)|approved\s+budget)\b[^\n\d]{0,40}?"
                    rf"(?P<v>(?:{_CURRENCY}\s*)?\d(?:[\d,.]*\d)?(?:\s*(?:million|mn|crore|lakh))?)"),
         "An amount within 40 characters after 'ceiling', 'budget cap/limit' or 'approved budget'.",
-        priority=90, group="v", validate=_budget_amount_plausible, entity=_digits),
+        priority=90, group="v", validate=_budget_amount_plausible, entity=_digits, propagate="amount"),
     PatternDetector(
         "CANARY-v1", "CANARY", "RESTRICTED",
         re.compile(r"(?i)LAB[\s_-]*CANARY(?:[\s_-]*\d+)?"),
@@ -276,7 +297,8 @@ def detect(
     cands: list[_Candidate] = []
 
     def collect(pattern: re.Pattern[str], group: str | int, validate: Callable[[str], bool] | None,
-                make: Callable[[str], _Candidate]) -> None:
+                make: Callable[[str], _Candidate]) -> list[str]:
+        pieces: list[str] = []
         for m in pattern.finditer(norm):
             ns, ne = m.span(group)
             if ne <= ns:
@@ -287,15 +309,32 @@ def detect(
             c = make(piece)
             c.start, c.end = to_original(ns, ne)
             cands.append(c)
+            pieces.append(piece)
+        return pieces
 
+    seeds: dict[tuple[str, str], PatternDetector] = {}
     for det in PATTERN_DETECTORS:
-        collect(det.pattern, det.group, det.validate,
-                lambda piece, d=det: _Candidate(0, 0, d.element_type, d.sensitivity, d.priority,
-                                                d.detector_id, d.entity(piece)))
+        pieces = collect(det.pattern, det.group, det.validate,
+                         lambda piece, d=det: _Candidate(0, 0, d.element_type, d.sensitivity, d.priority,
+                                                         d.detector_id, d.entity(piece)))
+        if det.propagate:
+            for piece in pieces:
+                seeds.setdefault((det.propagate, piece), det)
+    for (kind, piece), det in sorted(seeds.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        if kind == "digits" and len(_digits(piece)) >= 7:
+            pats: tuple[re.Pattern[str], ...] = (_digit_run_pattern(_digits(piece)),)
+        elif kind == "amount" and (value := _amount_value(piece)) is not None and value >= 10_000:
+            pats = figure_patterns(value)
+        else:
+            continue
+        for pat in pats:
+            collect(pat, 0, None,
+                    lambda p, d=det: _Candidate(0, 0, d.element_type, d.sensitivity, d.priority,
+                                                "PROPAGATED-v1", d.entity(p)))
     for entry in vocabulary.entries:
         collect(entry.compiled(), 0, None,
                 lambda piece, e=entry: _Candidate(0, 0, e.element_type, e.sensitivity, 70,
-                                                  f"VOCAB:{e.entity_key}", e.entity_key))
+                                                  f"VOCAB-{e.element_type}-v1", e.entity_key))  # id carries no vocabulary text
     for figure in vocabulary.restricted_figures:
         for pat in figure_patterns(figure):
             collect(pat, 0, None,
