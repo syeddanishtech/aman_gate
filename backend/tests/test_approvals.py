@@ -65,10 +65,12 @@ def test_expired_approval_cannot_execute(client):
     # force expiry directly in the DB, then approve attempt should fail as not pending
     gateway = client._modules["gateway"]
     db_mod = client._modules["db"]
-    from datetime import datetime, timezone
+    from datetime import datetime, timedelta, timezone
     s = db_mod.SessionLocal()
     ap = s.get(client._modules["models"].Approval, apid)
-    ap.expires_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    # Set expiry a few seconds in the PAST so expire_due()'s strict `<` comparison is deterministic
+    # regardless of sub-second timing under a large/slow suite (was flaky when set to exactly now).
+    ap.expires_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(seconds=5)
     s.commit()
     s.close()
     s2 = db_mod.SessionLocal()
