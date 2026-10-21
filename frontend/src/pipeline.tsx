@@ -135,11 +135,9 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
     api
       .documents()
       .then((d) => {
-        // Default to a readable, non-restricted document (preferably a supplier quotation, which carries
-        // contact details) so the first run shows the full happy path.
-        const ok = d.documents.filter((x) => x.readable && x.classification !== "restricted");
-        const first = ok.find((x) => x.doc_type === "quotation") ?? ok[0] ?? d.documents.find((x) => x.readable) ?? d.documents[0];
-        set((s) => ({ docs: d.documents, docsError: null, documentId: s.documentId ?? first?.document_id ?? null }));
+        // B18: do NOT auto-select a document. Pre-selecting one made the "Upload" step show as completed
+        // before the user had chosen anything. The list is shown; the user picks, and only then is step 1 done.
+        set((s) => ({ docs: d.documents, docsError: null, documentId: s.documentId }));
       })
       .catch((e) => set({ docsError: errMsg(e) }));
   }, [refreshKey, set]);

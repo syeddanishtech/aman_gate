@@ -27,6 +27,15 @@ from .security import Identity, current_identity, issue_token, require_roles, ve
 async def lifespan(app: FastAPI):
     settings.validate()
     ensure_seeded()
+    # AMAN Gate 2.0 tables live on the shared Base but outside the 1.0 bootstrap; create them here (idempotent).
+    from .privacy.models import create_privacy_schema
+    from .privacy.routes import create_analysis_schema
+    from .privacy.vault import create_vault_schema
+    from .bridge.models import create_bridge_schema
+    create_privacy_schema()
+    create_analysis_schema()
+    create_vault_schema()
+    create_bridge_schema()
     yield
 
 
@@ -39,6 +48,16 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["authorization", "content-type"],
 )
+
+# AMAN Gate 2.0 routers (Privacy Shield, Safe Cloud Bridge, Output Assurance). Each is a self-contained
+# APIRouter the work packages exposed; the Boss wires them here so no package edits main.py directly.
+from .privacy.routes import router as privacy_router  # noqa: E402
+from .bridge.routes import router as bridge_router  # noqa: E402
+from .assurance.routes import router as assurance_router  # noqa: E402
+
+app.include_router(privacy_router)
+app.include_router(bridge_router)
+app.include_router(assurance_router)
 
 
 @app.exception_handler(gateway.GatewayError)

@@ -225,7 +225,7 @@ function Shell({ user, refreshKey, refresh, logout }: { user: User; refreshKey: 
           )}
           {nav.section === "bridge" && <SafeBridge go={go} />}
           {nav.section === "assurance" && <OutputAssurance />}
-          {nav.section === "evidence" && <Evidence refreshKey={refreshKey} />}
+          {nav.section === "evidence" && <Evidence refreshKey={refreshKey} user={user} />}
           {nav.section === "settings" && <Settings user={user} onReset={resetDemo} resetting={resetting} onModeChanged={refresh} />}
           {nav.section === "judge" && <JudgeDemo go={go} />}
         </main>

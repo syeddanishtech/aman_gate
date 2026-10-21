@@ -89,16 +89,16 @@ export function BaselineSteps({ steps, summary }: { steps: any[]; summary: any }
 export function SplitRun({ result }: { result: any }) {
   const gated = result.gated;
   const baseline = result.baseline;
-  const blocked =
-    (gated?.summary?.deny || 0) +
-    (gated?.summary?.needs_approval || 0) +
-    (gated?.summary?.injected_attempts_blocked || 0);
+  // B1: count each gated decision once. injected_attempts_blocked is a SUBSET of deny, so it must not be
+  // added again — the badge is simply the denials plus the held (needs-approval) actions.
+  const blocked = (gated?.summary?.deny || 0) + (gated?.summary?.needs_approval || 0);
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <div className="card p-4">
         <div className="mb-3 flex items-center gap-2">
           <Bot size={18} className="text-slate-300" />
           <h3 className="text-sm font-semibold text-slate-100">AI Procurement Assistant</h3>
+          <span className="tag border border-navy-600 bg-navy-800 text-slate-400">scripted planner · no LLM</span>
           <span className="ml-auto text-[11px] text-slate-500">
             proposes {gated?.steps?.length || 0} action(s)
           </span>

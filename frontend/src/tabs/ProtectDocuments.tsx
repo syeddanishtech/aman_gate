@@ -220,6 +220,7 @@ function Shield({ go }: { go: (t: NavTarget) => void }) {
       <Card
         title="4 · Approve AI access"
         subtitle="A human decides whether this safe copy may go to the AI provider. Only the safe copy is ever sent."
+        right={<span className="tag border border-navy-600 bg-navy-800 text-slate-400">UI-only gate · the send is the audited action</span>}
       >
         <div className="flex flex-wrap items-center gap-3">
           {p.decision === "APPROVED" ? (

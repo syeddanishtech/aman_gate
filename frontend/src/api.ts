@@ -136,8 +136,9 @@ export const CONTRACT_ROWS: { key: string; method: "GET" | "POST"; path: string 
   { key: "assuranceCheck", method: "POST", path: "/api/assurance/check" },
 ];
 
-/** Compile-time default for the mock fallback. Set to false to hard-disable sample data for a release build. */
-export const USE_MOCK = true;
+/** Compile-time default for the mock fallback. The WP1-WP3 backends are now wired (privacy/bridge/assurance
+ *  routes exist), so the integrated build runs LIVE with no sample data — filmed screens show real results. */
+export const USE_MOCK = false;
 
 export type MockMode = "auto" | "force" | "off";
 const MOCK_MODE_KEY = "aman_gate_mock_mode";

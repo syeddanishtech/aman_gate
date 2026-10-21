@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { ShieldCheck, ShieldAlert, Download, FileBarChart, Link2 } from "lucide-react";
-import { api } from "../api";
+import { api, type User } from "../api";
 import { Card, Pill, Spinner, DecisionBadge } from "../ui";
 
 const FILTERS = ["ALL", "ALLOW", "DENY", "NEEDS_APPROVAL"];
 
-export default function Audit({ refreshKey }: { refreshKey: number }) {
+export default function Audit({ refreshKey, user }: { refreshKey: number; user?: User }) {
+  // B13: the raw chain export is an analyst-only action (the backend already restricts /api/audit/export
+  // to security_analyst); hide the control for everyone else so the UI matches what the server allows.
+  const canExportChain = user?.role === "security_analyst";
   const [events, setEvents] = useState<any[]>([]);
   const [verify, setVerify] = useState<any>(null);
   const [filter, setFilter] = useState("ALL");
@@ -90,9 +93,11 @@ export default function Audit({ refreshKey }: { refreshKey: number }) {
             <Spinner />
           )}
           <div className="mt-3 flex flex-wrap gap-2">
-            <button className="btn-ghost text-xs" onClick={exportChain}>
-              <Download size={13} /> Export chain (JSON)
-            </button>
+            {canExportChain && (
+              <button className="btn-ghost text-xs" onClick={exportChain}>
+                <Download size={13} /> Export chain (JSON)
+              </button>
+            )}
             <button className="btn-primary text-xs" onClick={genEvidence}>
               <FileBarChart size={13} /> Evidence report
             </button>

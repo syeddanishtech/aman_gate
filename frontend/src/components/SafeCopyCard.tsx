@@ -109,7 +109,7 @@ export function SafeCopyCard({
             {blocked ? <Ban size={16} className="text-deny-ink" aria-hidden /> : <ShieldCheck size={16} className="text-allow-ink" aria-hidden />}
             <h3 className="text-[13px] font-bold uppercase tracking-wide text-ink">Safe copy — what AI can see</h3>
             <span className={`tag ml-auto border ${blocked ? "border-deny/40 bg-deny/10 text-deny-ink" : "border-allow/40 bg-allow/10 text-allow-ink"}`}>
-              {blocked ? "Nothing shareable" : "Only this is shared"}
+              {blocked ? "Nothing shareable" : "Only this would be shared"}
             </span>
           </div>
           <div
