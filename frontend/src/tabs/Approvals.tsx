@@ -141,10 +141,10 @@ export default function Approvals({
               <div
                 className={`rounded-lg border p-2.5 text-[11px] ${
                   msg.tone === "deny"
-                    ? "border-deny/40 bg-deny/10 text-deny"
+                    ? "border-deny/40 bg-deny/10 text-deny-ink"
                     : msg.tone === "approve"
-                    ? "border-approve/40 bg-approve/10 text-approve"
-                    : "border-allow/40 bg-allow/10 text-allow"
+                    ? "border-approve/40 bg-approve/10 text-approve-ink"
+                    : "border-allow/40 bg-allow/10 text-allow-ink"
                 }`}
               >
                 {msg.text}
@@ -189,7 +189,7 @@ export default function Approvals({
                 {canDecide && a.status === "pending" && (
                   <>
                     <button
-                      className="btn bg-allow/90 px-2.5 py-1 text-xs text-navy-950 hover:bg-allow disabled:opacity-50"
+                      className="btn bg-allow px-2.5 py-1 text-xs text-white hover:bg-allow-dim disabled:opacity-50"
                       disabled={busy === a.approval_id + "a" || a.requester_user_id === user.user_id}
                       title={a.requester_user_id === user.user_id ? "Cannot approve your own request" : ""}
                       onClick={() => decide(a.approval_id, true)}
@@ -197,7 +197,7 @@ export default function Approvals({
                       <Check size={13} /> Approve
                     </button>
                     <button
-                      className="btn border border-deny/40 bg-deny/10 px-2.5 py-1 text-xs text-deny hover:bg-deny/20 disabled:opacity-50"
+                      className="btn border border-deny/40 bg-deny/10 px-2.5 py-1 text-xs text-deny-ink hover:bg-deny/20 disabled:opacity-50"
                       disabled={busy === a.approval_id + "d"}
                       onClick={() => decide(a.approval_id, false)}
                     >

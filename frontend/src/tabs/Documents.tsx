@@ -17,10 +17,10 @@ export default function Documents({
   const [denial, setDenial] = useState<any>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
+  // Only the registry list reloads on refresh. (Clearing `open`/`denial` here wiped the result the moment
+  // openDoc() called onChanged(), so "Open via gateway" never showed anything.)
   useEffect(() => {
     api.documents().then((d) => setDocs(d.documents));
-    setOpen(null);
-    setDenial(null);
   }, [refreshKey]);
 
   async function openDoc(id: string) {
@@ -76,7 +76,7 @@ export default function Documents({
                 <Pill tone={d.classification === "restricted" ? "deny" : "default"}>{d.classification}</Pill>
                 <span
                   className={`mono ${
-                    d.trust_label === "untrusted_external" ? "text-approve" : "text-slate-500"
+                    d.trust_label === "untrusted_external" ? "text-approve-ink" : "text-slate-500"
                   }`}
                 >
                   {d.trust_label}
@@ -93,14 +93,14 @@ export default function Documents({
         {denial && (
           <div className="rounded-lg border border-deny/40 bg-deny/10 p-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="text-deny" size={16} />
+              <AlertTriangle className="text-deny-ink" size={16} />
               <DecisionBadge decision="DENY" />
               <span className="mono ml-auto text-[11px] text-slate-500">{denial.id}</span>
             </div>
             <p className="mt-2 text-sm text-slate-200">{denial.message}</p>
             <div className="mono mt-2 flex flex-wrap gap-1.5 text-[11px]">
               <span className="rounded bg-navy-800 px-1.5 py-0.5 text-slate-400">{denial.policy_id}</span>
-              <span className="rounded bg-navy-800 px-1.5 py-0.5 text-deny">{denial.code}</span>
+              <span className="rounded bg-navy-800 px-1.5 py-0.5 text-deny-ink">{denial.code}</span>
             </div>
             <p className="mono mt-2 text-[10px] text-slate-600">event {denial.event_id}</p>
           </div>
@@ -108,13 +108,13 @@ export default function Documents({
         {open && (
           <div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="text-allow" size={16} />
+              <ShieldCheck className="text-allow-ink" size={16} />
               <DecisionBadge decision="ALLOW" />
               <span className="mono ml-auto text-[11px] text-slate-500">{open.document.document_id}</span>
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
               <Pill>{open.document.classification}</Pill>
-              <span className="mono text-approve">{open.document.trust_label}</span>
+              <span className="mono text-approve-ink">{open.document.trust_label}</span>
               <span className="text-slate-500">
                 advisory risk: <b className={riskColor(open.risk.band)}>{open.risk.band}</b> (
                 {open.risk.combined_score})
@@ -122,7 +122,7 @@ export default function Documents({
             </div>
             {open.risk.heuristic.signals.length > 0 && (
               <div className="mt-2 rounded-lg border border-approve/30 bg-approve/5 p-2 text-[11px] text-slate-300">
-                <b className="text-approve">Advisory signals (non-enforcing):</b>{" "}
+                <b className="text-approve-ink">Advisory signals (non-enforcing):</b>{" "}
                 {open.risk.heuristic.signals.map((s: any) => s.signal).join(", ")}
                 {open.risk.heuristic.evasion_markers.length > 0 && (
                   <> · evasion: {open.risk.heuristic.evasion_markers.join(", ")}</>
@@ -146,5 +146,5 @@ export default function Documents({
 }
 
 function riskColor(band: string) {
-  return band === "high" ? "text-deny" : band === "medium" ? "text-approve" : "text-slate-300";
+  return band === "high" ? "text-deny-ink" : band === "medium" ? "text-approve-ink" : "text-slate-300";
 }

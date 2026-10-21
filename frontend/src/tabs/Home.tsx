@@ -69,7 +69,7 @@ export default function Home({
       <div className="card p-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <FileWarning className="text-approve" size={18} />
+            <FileWarning className="text-approve-ink" size={18} />
             <h2 className="text-sm font-semibold text-slate-100">Live demonstration</h2>
           </div>
           <select
@@ -110,7 +110,7 @@ export default function Home({
         <SplitRun result={result} />
       ) : (
         <div className="card flex flex-col items-center justify-center gap-2 p-10 text-center">
-          <ShieldCheck className="text-allow/60" size={32} />
+          <ShieldCheck className="text-allow-ink/60" size={32} />
           <p className="text-sm text-slate-300">
             Pick a scenario and run it. The left panel shows what the AI assistant tries to do; the right
             panel shows AMAN Gate&apos;s independent allow / deny / approval decisions.
