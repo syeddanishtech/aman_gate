@@ -37,6 +37,16 @@ export interface PrimaryAction {
   hint?: string;
 }
 
+/** A bridge send the backend refused (HTTP 403 egress-deny), surfaced so the UI can show WHY on screen
+ *  rather than silently doing nothing. The decision itself is the backend's; this is just how it is shown. */
+export interface BridgeRefusal {
+  mode: string;
+  code: string;
+  message: string;
+  reasons: string[];
+  eventId?: string;
+}
+
 interface State {
   docs: RegistryDoc[] | null;
   docsError: string | null;
@@ -47,6 +57,7 @@ interface State {
   approved: boolean;
   providerMode: ProviderMode;
   bridge: Tagged<BridgeSendResponse> | null;
+  bridgeRefusal: BridgeRefusal | null;
   assurance: Tagged<AssuranceResponse> | null;
   assuranceInput: string;
   busy: "analyze" | "run" | "check" | null;
@@ -65,6 +76,7 @@ const initial: State = {
   approved: false,
   providerMode: "LOCAL_SIMULATOR",
   bridge: null,
+  bridgeRefusal: null,
   assurance: null,
   assuranceInput: "",
   busy: null,
@@ -145,20 +157,20 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
   const selectDocument = useCallback(
     (id: string) => {
       if (ref.current.documentId === id) return;
-      set({ documentId: id, analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, assurance: null, assuranceInput: "", error: null });
+      set({ documentId: id, analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, bridgeRefusal: null, assurance: null, assuranceInput: "", error: null });
     },
     [set],
   );
 
   const reset = useCallback(
-    () => set({ analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, assurance: null, assuranceInput: "", error: null, busy: null }),
+    () => set({ analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, bridgeRefusal: null, assurance: null, assuranceInput: "", error: null, busy: null }),
     [set],
   );
 
   const analyze = useCallback(async () => {
     const id = ref.current.documentId;
     if (!id || ref.current.busy) return;
-    set({ busy: "analyze", error: null, analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, assurance: null, assuranceInput: "" });
+    set({ busy: "analyze", error: null, analysis: null, artifact: null, reviewed: false, approved: false, bridge: null, bridgeRefusal: null, assurance: null, assuranceInput: "" });
     try {
       const a = await privacyApi.analyze(id);
       set({ analysis: a });
@@ -209,11 +221,33 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
     const s = ref.current;
     const artifactId = s.analysis?.data.safe_artifact_id;
     if (!artifactId || !s.approved || s.busy) return;
-    set({ busy: "run", error: null, bridge: null, assurance: null });
+    set({ busy: "run", error: null, bridge: null, bridgeRefusal: null, assurance: null });
+    // The send and the follow-up assurance check are handled separately so a 403 egress-DENY from the
+    // bridge is shown as a refusal in the response card (reason codes), not swallowed as a generic error.
+    let sent: Tagged<BridgeSendResponse>;
     try {
-      const b = await bridgeApi.send(artifactId, s.providerMode);
-      set({ bridge: b, assuranceInput: b.data.response });
-      const a = await assuranceApi.check(b.data.response, artifactId);
+      sent = await bridgeApi.send(artifactId, s.providerMode);
+    } catch (e) {
+      if (e instanceof ApiError && e.detail && typeof e.detail === "object") {
+        const d = e.detail as { code?: string; message?: string; mode?: string; egress_blocked_reasons?: string[]; event_id?: string };
+        set({
+          bridgeRefusal: {
+            mode: d.mode ?? s.providerMode,
+            code: d.code ?? "EGRESS_DENIED",
+            message: d.message ?? "The bridge refused to send. Nothing left this machine.",
+            reasons: d.egress_blocked_reasons ?? (d.code ? [d.code] : []),
+            eventId: d.event_id,
+          },
+          busy: null,
+        });
+      } else {
+        set({ error: errMsg(e), busy: null });
+      }
+      return;
+    }
+    set({ bridge: sent, assuranceInput: sent.data.response });
+    try {
+      const a = await assuranceApi.check(sent.data.response, artifactId);
       set({ assurance: a });
     } catch (e) {
       set({ error: errMsg(e) });
@@ -322,7 +356,7 @@ export function PipelineProvider({ refreshKey, children }: { refreshKey: number;
     view,
     simulationReasons,
     selectDocument,
-    setProviderMode: (m) => set({ providerMode: m }),
+    setProviderMode: (m) => set({ providerMode: m, bridgeRefusal: null }),
     analyze,
     review,
     approve,

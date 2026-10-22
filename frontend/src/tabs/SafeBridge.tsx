@@ -3,7 +3,7 @@ import type { ProviderMode } from "../api";
 import { usePipeline } from "../pipeline";
 import { CheckList, PageHeader, SourceTag } from "../components/common";
 import { verifySafeCopy, type Check } from "../lib/contract";
-import { Card, Pill, Spinner } from "../ui";
+import { Card, DecisionBadge, Pill, Spinner } from "../ui";
 import type { NavTarget } from "../nav";
 
 const MODES: { id: ProviderMode; title: string; desc: string; badge: string }[] = [
@@ -123,7 +123,8 @@ export default function SafeBridge({ go }: { go: (t: NavTarget) => void }) {
             )}
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <button className="btn-primary px-5 py-2.5 text-[15px]" disabled={!canSend} onClick={() => void p.runAI()}>
-                {p.busy === "run" ? <Spinner /> : <Play size={17} aria-hidden />} Run AI (Simulator)
+                {p.busy === "run" ? <Spinner /> : <Play size={17} aria-hidden />}{" "}
+                {p.providerMode === "LOCAL_SIMULATOR" ? "Run AI (Simulator)" : "Attempt send"}
               </button>
               {!p.approved && (
                 <button className="btn-ghost" onClick={() => go({ section: "protect" })}>
@@ -183,6 +184,30 @@ export default function SafeBridge({ go }: { go: (t: NavTarget) => void }) {
                     {p.bridge.data.response}
                   </pre>
                 </div>
+              </div>
+            ) : p.bridgeRefusal ? (
+              <div role="alert" className="rounded-lg border border-deny/40 bg-deny/10 p-4 text-deny-ink">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <DecisionBadge decision="DENY" />
+                  <span className="mono text-[11px] text-slate-500">{p.bridgeRefusal.mode}</span>
+                </div>
+                <p className="text-sm">
+                  <b>Egress denied — nothing was sent.</b> {p.bridgeRefusal.message}
+                </p>
+                {p.bridgeRefusal.reasons.length > 0 && (
+                  <ul className="mono mt-2 list-disc pl-5 text-xs">
+                    {p.bridgeRefusal.reasons.map((r) => (
+                      <li key={r}>{r}</li>
+                    ))}
+                  </ul>
+                )}
+                {p.bridgeRefusal.eventId && (
+                  <p className="mono mt-2 text-[10px] text-slate-500">audit event {p.bridgeRefusal.eventId}</p>
+                )}
+                <p className="mt-2 text-[11px] text-slate-500">
+                  The gateway refused this provider at the backend (default-deny egress). Switch to the local
+                  simulator to proceed.
+                </p>
               </div>
             ) : (
               <p className="rounded-lg border border-dashed border-navy-600 p-6 text-center text-sm text-slate-500">
