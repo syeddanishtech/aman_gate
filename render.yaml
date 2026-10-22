@@ -1,0 +1,27 @@
+# Render Blueprint — one public URL for AMAN Gate, auto-deployed from GitHub.
+# In Render: New ▸ Blueprint ▸ pick this repo. Or deploy manually (see docs/DEPLOY_RENDER.md).
+#
+# It builds the existing Dockerfile (frontend build + FastAPI backend + advisory model), serves the whole
+# app on Render's injected $PORT, and health-checks /api/health. Synthetic data only; the SQLite DB is
+# ephemeral on the free plan and reseeds on each cold start — fine for a demo.
+services:
+  - type: web
+    name: aman-gate
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # demo mode keeps quick-login + the scenario lab on so judges can click straight in (synthetic data)
+      - key: AMAN_ENV
+        value: demo
+      # Real per-deploy secrets (44-char random), so the public instance does NOT use the repo's demo keys.
+      - key: AMAN_JWT_SECRET
+        generateValue: true
+      - key: AMAN_AUDIT_HMAC_KEY
+        generateValue: true
+      - key: AMAN_VAULT_MASTER_SECRET
+        generateValue: true

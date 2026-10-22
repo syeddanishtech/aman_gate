@@ -27,6 +27,10 @@ This is the full system with real server-side enforcement — not a mock. The Co
 GitHub account and uses synthetic data only. (GitHub Pages can't host this: the security lives in the Python
 backend, which Pages cannot run.)
 
+**Want a public link anyone can open (e.g. judges)?** Deploy the repo's `Dockerfile` to a free host in a few
+clicks — see [`docs/DEPLOY_RENDER.md`](docs/DEPLOY_RENDER.md) (`render.yaml` blueprint included; auto-deploys
+on push).
+
 ---
 
 ## The one idea

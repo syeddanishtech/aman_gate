@@ -17,4 +17,6 @@ COPY --from=frontend /app/frontend/dist /app/frontend/dist
 # Train the advisory model at build time so the image is self-contained and offline.
 RUN python -m scripts.train_model
 EXPOSE 8000
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Shell form so ${PORT} expands: Render (and other PaaS) inject PORT; locally it defaults to 8000, so
+# docker-compose and `docker run -p 8000:8000` keep working unchanged.
+CMD python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
